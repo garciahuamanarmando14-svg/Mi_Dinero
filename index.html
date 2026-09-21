@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Mi Dinero</title>
+
+<style>
+
+/* ================= GENERAL ================= */
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f3f4f6;
+    color:#222;
+    padding-bottom:80px;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:20px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+h2{
+    margin-top:0;
+}
+
+
+/* ================= PANTALLAS ================= */
+
+.pantalla{
+    display:none;
+    padding:20px;
+}
+
+.pantalla.activa{
+    display:block;
+}
+
+
+/* ================= TARJETAS ================= */
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px #00000015;
+}
+
+.saldo{
+    font-size:32px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+
+/* ================= CUADRICULA ================= */
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.mini{
+    background:white;
+    padding:15px;
+    border-radius:14px;
+    box-shadow:0 2px 8px #00000012;
+    cursor:pointer;
+    transition:transform 0.1s;
+}
+
+.mini:active{
+    transform:scale(0.97);
+}
+
+.mini b{
+    display:block;
+    font-size:20px;
+    margin-top:5px;
+}
+
+
+/* ================= BOTONES ================= */
+
+button{
+    border:0;
+    border-radius:12px;
+    padding:14px;
+    width:100%;
+    font-size:16px;
+    font-weight:bold;
+    margin-top:10px;
+    cursor:pointer;
+}
+
+.verde{
+    background:#16a34a;
+    color:white;
+}
+
+.rojo{
+    background:#dc2626;
+    color:white;
+}
+
+.azul{
+    background:#2563eb;
+    color:white;
+}
+
+.gris{
+    background:#e5e7eb;
+    color:#111827;
+}
+
+
+/* ================= FORMULARIOS ================= */
+
+input,
+select{
+    width:100%;
+    padding:14px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    margin:8px 0 14px;
+    font-size:16px;
+}
+
+label{
+    font-weight:bold;
+}
+
+
+/* ================= MOVIMIENTOS ================= */
+
+.mov{
+    background:white;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:12px;
+    box-shadow:0 2px 8px #00000010;
+}
+
+.ingreso{
+    border-left:5px solid #16a34a;
+}
+
+.gasto{
+    border-left:5px solid #dc2626;
+}
+
+
+/* ================= DEUDAS ================= */
+
+.deuda{
+    background:white;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:12px;
+    box-shadow:0 2px 8px #00000010;
+}
+
+
+/* ================= VACIO ================= */
+
+.vacio{
+    text-align:center;
+    color:#777;
+    padding:25px;
+}
+
+
+/* ================= MENU INFERIOR ================= */
+
+.menu{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:70px;
+    background:white;
+    border-top:1px solid #ddd;
+    display:flex;
+    justify-content:space-around;
+    z-index:100;
+}
+
+.menu button{
+    margin:0;
+    padding:5px;
+    background:white;
+    color:#555;
+    font-size:11px;
+    border-radius:0;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:380px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================================================= -->
+<!-- HEADER -->
+<!-- ================================================= -->
+
+<header>
+    💰 Mi Dinero
+</header>
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#111827">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent"
+>
+
+<meta
+    name="apple-mobile-web-app-title"
+    content="Mi Dinero"
+> 
+
+<!-- ================================================= -->
+<!-- INICIO -->
+<!-- ================================================= -->
+
+<section
+    id="inicio"
+    class="pantalla activa"
+>
+
+    <h2>Inicio</h2>
+
+
+    <div class="card">
+
+        <div>
+            Saldo disponible
+        </div>
+
+        <div
+            class="saldo"
+            id="saldo"
+        >
+            S/ 0.00
+        </div>
+
+    </div>
+
+
+
+    <div class="grid">
+
+
+        <!-- EFECTIVO -->
+
+        <div
+            class="mini"
+            onclick="abrirMedio('Efectivo')"
+        >
+
+            💵 Efectivo
+
+            <b id="totalEfectivo">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+
+        <!-- YAPE -->
+
+        <div
+            class="mini"
+            onclick="abrirMedio('Yape')"
+        >
+
+            📱 Yape
+
+            <b id="totalYape">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+
+        <!-- PLIN -->
+
+        <div
+            class="mini"
+            onclick="abrirMedio('Plin')"
+        >
+
+            📲 Plin
+
+            <b id="totalPlin">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+
+        <!-- LEMON -->
+
+        <div
+            class="mini"
+            onclick="abrirMedio('Lemon')"
+        >
+
+            🍋 Lemon
+
+            <b id="totalLemon">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+
+        <!-- INGRESOS -->
+
+        <div class="mini">
+
+            📈 Ingresos
+
+            <b id="totalIngresos">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+
+        <!-- GASTOS -->
+
+        <div class="mini">
+
+            📉 Gastos
+
+            <b id="totalGastos">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+
+        <!-- DEUDAS -->
+
+        <div class="mini">
+
+            💳 Deudas
+
+            <b id="totalDeudas">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+
+        <!-- AHORROS -->
+
+        <div class="mini">
+
+            💰 Ahorros
+
+            <b id="totalAhorros">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h3>
+            Agregar movimiento
+        </h3>
+
+
+        <button
+            class="verde"
+            onclick="abrirAgregar('ingreso')"
+        >
+
+            ➕ Registrar ingreso
+
+        </button>
+
+
+        <button
+            class="rojo"
+            onclick="abrirAgregar('gasto')"
+        >
+
+            ➖ Registrar gasto
+
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- AGREGAR / EDITAR MOVIMIENTO -->
+<!-- ================================================= -->
+
+<section
+    id="agregar"
+    class="pantalla"
+>
+
+    <h2 id="tituloAgregar">
+        Registrar movimiento
+    </h2>
+
+
+    <div class="card">
+
+
+        <label>
+            Concepto
+        </label>
+
+        <input
+            id="concepto"
+            type="text"
+            placeholder="Ej. Venta de pollo"
+        >
+
+
+
+        <label>
+            Monto
+        </label>
+
+        <input
+            id="monto"
+            type="number"
+            inputmode="decimal"
+            placeholder="0.00"
+        >
+
+
+
+        <label>
+            Medio
+        </label>
+
+        <select id="medio">
+
+            <option value="Efectivo">
+                💵 Efectivo
+            </option>
+
+            <option value="Yape">
+                📱 Yape
+            </option>
+
+            <option value="Plin">
+                📲 Plin
+            </option>
+
+            <option value="Lemon">
+                🍋 Lemon
+            </option>
+
+        </select>
+
+
+
+        <button
+            class="verde"
+            onclick="guardarMovimiento()"
+        >
+
+            💾 Guardar
+
+        </button>
+
+
+
+        <button
+            class="gris"
+            onclick="cancelarMovimiento()"
+        >
+
+            Cancelar
+
+        </button>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- PANTALLA DE EFECTIVO / YAPE / PLIN / LEMON -->
+<!-- ================================================= -->
+
+<section
+    id="medioDinero"
+    class="pantalla"
+>
+
+    <h2 id="tituloMedio">
+        💵 Efectivo
+    </h2>
+
+
+
+    <div class="card">
+
+        <div>
+            Saldo disponible
+        </div>
+
+
+        <div
+            class="saldo"
+            id="saldoMedio"
+        >
+            S/ 0.00
+        </div>
+
+    </div>
+
+
+
+    <div class="grid">
+
+
+        <div class="mini">
+
+            📈 Ingresos
+
+            <b id="ingresosMedio">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+
+        <div class="mini">
+
+            📉 Gastos
+
+            <b id="gastosMedio">
+                S/ 0.00
+            </b>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h3>
+            📋 Movimientos
+        </h3>
+
+
+        <div id="listaMedio"></div>
+
+    </div>
+
+
+
+    <button
+        class="gris"
+        onclick="mostrar('inicio')"
+    >
+
+        ⬅️ Volver
+
+    </button>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- MOVIMIENTOS -->
+<!-- ================================================= -->
+
+<section
+    id="movimientos"
+    class="pantalla"
+>
+
+    <h2>
+        📋 Movimientos
+    </h2>
+
+
+    <div id="listaMovimientos"></div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- DEUDAS -->
+<!-- ================================================= -->
+
+<section
+    id="deudas"
+    class="pantalla"
+>
+
+    <h2>
+        💳 Deudas
+    </h2>
+
+
+
+    <div class="card">
+
+
+        <label>
+            Tipo
+        </label>
+
+        <select id="tipoDeuda">
+
+            <option value="meDeben">
+                Me deben
+            </option>
+
+            <option value="yoDebo">
+                Yo debo
+            </option>
+
+        </select>
+
+
+
+        <label>
+            Persona
+        </label>
+
+        <input
+            id="personaDeuda"
+            type="text"
+            placeholder="Nombre"
+        >
+
+
+
+        <label>
+            Monto
+        </label>
+
+        <input
+            id="montoDeuda"
+            type="number"
+            inputmode="decimal"
+            placeholder="0.00"
+        >
+
+
+
+        <button
+            class="azul"
+            onclick="guardarDeuda()"
+        >
+
+            💾 Guardar deuda
+
+        </button>
+
+    </div>
+
+
+
+    <div id="listaDeudas"></div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- NEGOCIOS -->
+<!-- ================================================= -->
+
+<section
+    id="negocios"
+    class="pantalla"
+>
+
+    <h2>
+        🏪 Dinero de negocios
+    </h2>
+
+
+
+    <div class="card">
+
+
+        <label>
+            Negocio
+        </label>
+
+        <input
+            id="nombreNegocio"
+            type="text"
+            placeholder="Ej. Anticuchos"
+        >
+
+
+
+        <label>
+            Monto
+        </label>
+
+        <input
+            id="montoNegocio"
+            type="number"
+            inputmode="decimal"
+            placeholder="0.00"
+        >
+
+
+
+        <label>
+            Tipo
+        </label>
+
+        <select id="tipoNegocio">
+
+            <option value="entrada">
+                Entrada
+            </option>
+
+            <option value="salida">
+                Salida
+            </option>
+
+        </select>
+
+
+
+        <button
+            class="azul"
+            onclick="guardarNegocio()"
+        >
+
+            💾 Guardar
+
+        </button>
+
+    </div>
+
+
+
+    <div id="listaNegocios"></div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- AHORROS -->
+<!-- ================================================= -->
+
+<section
+    id="ahorros"
+    class="pantalla"
+>
+
+    <h2>
+        💰 Ahorros
+    </h2>
+
+
+
+    <div class="card">
+
+
+        <label>
+            Monto
+        </label>
+
+        <input
+            id="montoAhorro"
+            type="number"
+            inputmode="decimal"
+            placeholder="0.00"
+        >
+
+
+
+        <label>
+            Tipo
+        </label>
+
+        <select id="tipoAhorro">
+
+            <option value="entrada">
+                Agregar ahorro
+            </option>
+
+            <option value="salida">
+                Retirar ahorro
+            </option>
+
+        </select>
+
+
+
+        <button
+            class="azul"
+            onclick="guardarAhorro()"
+        >
+
+            💾 Guardar
+
+        </button>
+
+    </div>
+
+
+
+    <div class="card">
+
+        Total ahorrado:
+
+
+        <div
+            class="saldo"
+            id="saldoAhorros"
+        >
+
+            S/ 0.00
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- MENU INFERIOR -->
+<!-- ================================================= -->
+
+<nav class="menu">
+
+
+    <button
+        onclick="mostrar('inicio')"
+    >
+
+        🏠
+        <br>
+        Inicio
+
+    </button>
+
+
+
+    <button
+        onclick="mostrar('movimientos')"
+    >
+
+        📋
+        <br>
+        Movimientos
+
+    </button>
+
+
+
+    <button
+        onclick="mostrar('deudas')"
+    >
+
+        💳
+        <br>
+        Deudas
+
+    </button>
+
+
+
+    <button
+        onclick="mostrar('negocios')"
+    >
+
+        🏪
+        <br>
+        Negocios
+
+    </button>
+
+
+
+    <button
+        onclick="mostrar('ahorros')"
+    >
+
+        💰
+        <br>
+        Ahorros
+
+    </button>
+
+
+</nav>
+
+
+
+
+
+<script>
+
+let movimientos =
+JSON.parse(localStorage.getItem("movimientos")) || [];
+
+let deudas =
+JSON.parse(localStorage.getItem("deudas")) || [];
+
+let negocios =
+JSON.parse(localStorage.getItem("negocios")) || [];
+
+let ahorros =
+JSON.parse(localStorage.getItem("ahorros")) || [];
+
+
+let tipoMovimientoActual = "ingreso";
+
+let movimientoEditando = null;
+
+
+/* ================================================= */
+/* NAVEGACIÓN */
+/* ================================================= */
+
+function mostrar(nombre){
+
+    let pantallas =
+        document.querySelectorAll(".pantalla");
+
+    pantallas.forEach(function(p){
+
+        p.classList.remove("activa");
+
+    });
+
+
+    let pantalla =
+        document.getElementById(nombre);
+
+
+    if(pantalla){
+
+        pantalla.classList.add("activa");
+
+    }
+
+
+    actualizar();
+
+    window.scrollTo(0,0);
+
+}
+
+
+
+/* ================================================= */
+/* AGREGAR MOVIMIENTO */
+/* ================================================= */
+
+function abrirAgregar(tipo){
+
+    tipoMovimientoActual = tipo;
+
+    movimientoEditando = null;
+
+
+    document.getElementById("concepto").value = "";
+
+    document.getElementById("monto").value = "";
+
+    document.getElementById("medio").value = "Efectivo";
+
+
+    if(tipo === "ingreso"){
+
+        document.getElementById("tituloAgregar").innerText =
+            "➕ Registrar ingreso";
+
+    }else{
+
+        document.getElementById("tituloAgregar").innerText =
+            "➖ Registrar gasto";
+
+    }
+
+
+    mostrar("agregar");
+
+}
+
+
+
+/* ================================================= */
+/* CANCELAR MOVIMIENTO */
+/* ================================================= */
+
+function cancelarMovimiento(){
+
+    movimientoEditando = null;
+
+    document.getElementById("concepto").value = "";
+
+    document.getElementById("monto").value = "";
+
+    mostrar("inicio");
+
+}
+
+
+
+/* ================================================= */
+/* GUARDAR MOVIMIENTO */
+/* ================================================= */
+
+function guardarMovimiento(){
+
+    let concepto =
+        document.getElementById("concepto").value.trim();
+
+
+    let monto =
+        parseFloat(
+            document.getElementById("monto").value
+        );
+
+
+    let medio =
+        document.getElementById("medio").value;
+
+
+    if(concepto === ""){
+
+        alert("Escribe el concepto");
+
+        return;
+
+    }
+
+
+    if(isNaN(monto) || monto <= 0){
+
+        alert("Ingresa un monto válido");
+
+        return;
+
+    }
+
+
+
+    /* EDITAR */
+
+    if(movimientoEditando !== null){
+
+        let movimiento =
+            movimientos.find(function(m){
+
+                return m.id === movimientoEditando;
+
+            });
+
+
+        if(movimiento){
+
+            movimiento.concepto = concepto;
+
+            movimiento.monto = monto;
+
+            movimiento.medio = medio;
+
+            movimiento.tipo = tipoMovimientoActual;
+
+        }
+
+
+        movimientoEditando = null;
+
+
+        localStorage.setItem(
+            "movimientos",
+            JSON.stringify(movimientos)
+        );
+
+
+        alert("✅ Movimiento actualizado");
+
+
+        actualizar();
+
+        mostrar("movimientos");
+
+        return;
+
+    }
+
+
+
+    /* NUEVO */
+
+    movimientos.push({
+
+        id:Date.now(),
+
+        concepto:concepto,
+
+        monto:monto,
+
+        medio:medio,
+
+        tipo:tipoMovimientoActual,
+
+        fecha:new Date().toLocaleDateString("es-PE")
+
+    });
+
+
+    localStorage.setItem(
+        "movimientos",
+        JSON.stringify(movimientos)
+    );
+
+
+    document.getElementById("concepto").value = "";
+
+    document.getElementById("monto").value = "";
+
+
+    alert("✅ Movimiento guardado");
+
+
+    actualizar();
+
+    mostrar("movimientos");
+
+}
+
+
+
+/* ================================================= */
+/* MOSTRAR MOVIMIENTOS */
+/* ================================================= */
+
+function mostrarMovimientos(){
+
+    let lista =
+        document.getElementById("listaMovimientos");
+
+
+    if(!lista){
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    if(movimientos.length === 0){
+
+        lista.innerHTML =
+            '<div class="vacio">No hay movimientos todavía</div>';
+
+        return;
+
+    }
+
+
+
+    let ordenados =
+        [...movimientos].reverse();
+
+
+    ordenados.forEach(function(m){
+
+        let div =
+            document.createElement("div");
+
+
+        div.className =
+            "mov " +
+            (m.tipo === "ingreso"
+                ? "ingreso"
+                : "gasto");
+
+
+        let signo =
+            m.tipo === "ingreso"
+                ? "+"
+                : "-";
+
+
+        let color =
+            m.tipo === "ingreso"
+                ? "#16a34a"
+                : "#dc2626";
+
+
+        div.innerHTML = `
+
+            <strong>
+                ${m.concepto}
+            </strong>
+
+            <br>
+
+            <span>
+                ${m.medio}
+            </span>
+
+            <br>
+
+            <span>
+                ${m.fecha || ""}
+            </span>
+
+            <br>
+
+            <strong style="color:${color};font-size:20px;">
+                ${signo} S/ ${m.monto.toFixed(2)}
+            </strong>
+
+            <br>
+
+            <button
+                class="azul"
+                onclick="editarMovimiento(${m.id})"
+            >
+                ✏️ Editar
+            </button>
+
+            <button
+                class="rojo"
+                onclick="eliminarMovimiento(${m.id})"
+            >
+                🗑️ Eliminar
+            </button>
+
+        `;
+
+
+        lista.appendChild(div);
+
+    });
+
+}
+
+
+
+/* ================================================= */
+/* EDITAR MOVIMIENTO */
+/* ================================================= */
+
+function editarMovimiento(id){
+
+    let movimiento =
+        movimientos.find(function(m){
+
+            return m.id === id;
+
+        });
+
+
+    if(!movimiento){
+
+        alert("No se encontró el movimiento");
+
+        return;
+
+    }
+
+
+    movimientoEditando = id;
+
+
+    tipoMovimientoActual =
+        movimiento.tipo;
+
+
+    document.getElementById("concepto").value =
+        movimiento.concepto;
+
+
+    document.getElementById("monto").value =
+        movimiento.monto;
+
+
+    document.getElementById("medio").value =
+        movimiento.medio;
+
+
+    document.getElementById("tituloAgregar").innerText =
+        "✏️ Editar movimiento";
+
+
+    mostrar("agregar");
+
+}
+
+
+
+/* ================================================= */
+/* ELIMINAR MOVIMIENTO */
+/* ================================================= */
+
+function eliminarMovimiento(id){
+
+    let confirmar =
+        confirm(
+            "¿Seguro que quieres eliminar este movimiento?"
+        );
+
+
+    if(!confirmar){
+
+        return;
+
+    }
+
+
+    movimientos =
+        movimientos.filter(function(m){
+
+            return m.id !== id;
+
+        });
+
+
+    localStorage.setItem(
+        "movimientos",
+        JSON.stringify(movimientos)
+    );
+
+
+    alert("🗑️ Movimiento eliminado");
+
+
+    actualizar();
+
+}
+
+
+
+/* ================================================= */
+/* ABRIR EFECTIVO / YAPE / PLIN / LEMON */
+/* ================================================= */
+
+function abrirMedio(medio){
+
+    document.getElementById("tituloMedio").innerText =
+        "💰 " + medio;
+
+
+    let ingresos = 0;
+
+    let gastos = 0;
+
+    let lista = [];
+
+
+
+    movimientos.forEach(function(m){
+
+        if(m.medio === medio){
+
+            lista.push(m);
+
+
+            if(m.tipo === "ingreso"){
+
+                ingresos += Number(m.monto);
+
+            }else{
+
+                gastos += Number(m.monto);
+
+            }
+
+        }
+
+    });
+
+
+    let saldo =
+        ingresos - gastos;
+
+
+    document.getElementById("saldoMedio").innerText =
+        "S/ " + saldo.toFixed(2);
+
+
+    document.getElementById("ingresosMedio").innerText =
+        "S/ " + ingresos.toFixed(2);
+
+
+    document.getElementById("gastosMedio").innerText =
+        "S/ " + gastos.toFixed(2);
+
+
+
+    let contenedor =
+        document.getElementById("listaMedio");
+
+
+    contenedor.innerHTML = "";
+
+
+    if(lista.length === 0){
+
+        contenedor.innerHTML =
+            '<div class="vacio">No hay movimientos en este medio</div>';
+
+    }else{
+
+
+        lista.reverse();
+
+
+        lista.forEach(function(m){
+
+            let div =
+                document.createElement("div");
+
+
+            div.className =
+                "mov " +
+                (m.tipo === "ingreso"
+                    ? "ingreso"
+                    : "gasto");
+
+
+            let signo =
+                m.tipo === "ingreso"
+                    ? "+"
+                    : "-";
+
+
+            div.innerHTML = `
+
+                <strong>
+                    ${m.concepto}
+                </strong>
+
+                <br>
+
+                ${m.fecha || ""}
+
+                <br>
+
+                <strong>
+                    ${signo} S/ ${Number(m.monto).toFixed(2)}
+                </strong>
+
+            `;
+
+
+            contenedor.appendChild(div);
+
+        });
+
+    }
+
+
+    mostrar("medioDinero");
+
+}
+
+
+
+/* ================================================= */
+/* DEUDAS */
+/* ================================================= */
+
+function guardarDeuda(){
+
+    let tipo =
+        document.getElementById("tipoDeuda").value;
+
+
+    let persona =
+        document.getElementById("personaDeuda").value.trim();
+
+
+    let monto =
+        parseFloat(
+            document.getElementById("montoDeuda").value
+        );
+
+
+    if(persona === ""){
+
+        alert("Escribe el nombre de la persona");
+
+        return;
+
+    }
+
+
+    if(isNaN(monto) || monto <= 0){
+
+        alert("Ingresa un monto válido");
+
+        return;
+
+    }
+
+
+    deudas.push({
+
+        id:Date.now(),
+
+        tipo:tipo,
+
+        persona:persona,
+
+        monto:monto,
+
+        pagado:0
+
+    });
+
+
+    localStorage.setItem(
+        "deudas",
+        JSON.stringify(deudas)
+    );
+
+
+    document.getElementById("personaDeuda").value = "";
+
+    document.getElementById("montoDeuda").value = "";
+
+
+    alert("✅ Deuda guardada");
+
+
+    actualizar();
+
+}
+
+
+
+/* ================================================= */
+/* MOSTRAR DEUDAS */
+/* ================================================= */
+
+function mostrarDeudas(){
+
+    let lista =
+        document.getElementById("listaDeudas");
+
+
+    if(!lista){
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    if(deudas.length === 0){
+
+        lista.innerHTML =
+            '<div class="vacio">No hay deudas registradas</div>';
+
+        return;
+
+    }
+
+
+
+    [...deudas].reverse().forEach(function(d){
+
+        let pendiente =
+            Number(d.monto) -
+            Number(d.pagado || 0);
+
+
+        let div =
+            document.createElement("div");
+
+
+        div.className = "deuda";
+
+
+        div.innerHTML = `
+
+            <strong>
+                ${d.tipo === "meDeben"
+                    ? "👤 Me deben"
+                    : "💳 Yo debo"}
+            </strong>
+
+            <br><br>
+
+            Persona:
+            <strong>
+                ${d.persona}
+            </strong>
+
+            <br>
+
+            Total:
+            S/ ${Number(d.monto).toFixed(2)}
+
+            <br>
+
+            Pagado:
+            S/ ${Number(d.pagado || 0).toFixed(2)}
+
+            <br>
+
+            Pendiente:
+            <strong>
+                S/ ${pendiente.toFixed(2)}
+            </strong>
+
+            <button
+                class="verde"
+                onclick="pagarDeuda(${d.id})"
+            >
+                💵 Registrar pago
+            </button>
+
+            <button
+                class="rojo"
+                onclick="eliminarDeuda(${d.id})"
+            >
+                🗑️ Eliminar
+            </button>
+
+        `;
+
+
+        lista.appendChild(div);
+
+    });
+
+}
+
+
+
+/* ================================================= */
+/* PAGAR DEUDA */
+/* ================================================= */
+
+function pagarDeuda(id){
+
+    let deuda =
+        deudas.find(function(d){
+
+            return d.id === id;
+
+        });
+
+
+    if(!deuda){
+
+        return;
+
+    }
+
+
+    let pendiente =
+        Number(deuda.monto) -
+        Number(deuda.pagado || 0);
+
+
+    if(pendiente <= 0){
+
+        alert("Esta deuda ya está pagada");
+
+        return;
+
+    }
+
+
+    let pago =
+        prompt(
+            "¿Cuánto deseas registrar como pago?"
+        );
+
+
+    if(pago === null){
+
+        return;
+
+    }
+
+
+    pago =
+        parseFloat(pago);
+
+
+    if(isNaN(pago) || pago <= 0){
+
+        alert("Ingresa un monto válido");
+
+        return;
+
+    }
+
+
+    if(pago > pendiente){
+
+        alert(
+            "El pago no puede ser mayor que la deuda pendiente"
+        );
+
+        return;
+
+    }
+
+
+    deuda.pagado =
+        Number(deuda.pagado || 0) + pago;
+
+
+    localStorage.setItem(
+        "deudas",
+        JSON.stringify(deudas)
+    );
+
+
+    alert("✅ Pago registrado");
+
+
+    actualizar();
+
+}
+
+
+
+/* ================================================= */
+/* ELIMINAR DEUDA */
+/* ================================================= */
+
+function eliminarDeuda(id){
+
+    if(
+        !confirm(
+            "¿Seguro que quieres eliminar esta deuda?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    deudas =
+        deudas.filter(function(d){
+
+            return d.id !== id;
+
+        });
+
+
+    localStorage.setItem(
+        "deudas",
+        JSON.stringify(deudas)
+    );
+
+
+    actualizar();
+
+}
+
+
+
+/* ================================================= */
+/* NEGOCIOS */
+/* ================================================= */
+
+function guardarNegocio(){
+
+    let nombre =
+        document.getElementById(
+            "nombreNegocio"
+        ).value.trim();
+
+
+    let monto =
+        parseFloat(
+            document.getElementById(
+                "montoNegocio"
+            ).value
+        );
+
+
+    let tipo =
+        document.getElementById(
+            "tipoNegocio"
+        ).value;
+
+
+    if(nombre === ""){
+
+        alert(
+            "Escribe el nombre del negocio"
+        );
+
+        return;
+
+    }
+
+
+    if(isNaN(monto) || monto <= 0){
+
+        alert(
+            "Ingresa un monto válido"
+        );
+
+        return;
+
+    }
+
+
+    negocios.push({
+
+        id:Date.now(),
+
+        nombre:nombre,
+
+        monto:monto,
+
+        tipo:tipo
+
+    });
+
+
+    localStorage.setItem(
+        "negocios",
+        JSON.stringify(negocios)
+    );
+
+
+    document.getElementById(
+        "nombreNegocio"
+    ).value = "";
+
+
+    document.getElementById(
+        "montoNegocio"
+    ).value = "";
+
+
+    alert(
+        "✅ Movimiento del negocio guardado"
+    );
+
+
+    actualizar();
+
+}
+
+
+
+/* ================================================= */
+/* MOSTRAR NEGOCIOS */
+/* ================================================= */
+
+function mostrarNegocios(){
+
+    let lista =
+        document.getElementById(
+            "listaNegocios"
+        );
+
+
+    if(!lista){
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    if(negocios.length === 0){
+
+        lista.innerHTML =
+            '<div class="vacio">No hay movimientos de negocios</div>';
+
+        return;
+
+    }
+
+
+    [...negocios].reverse().forEach(function(n){
+
+        let div =
+            document.createElement("div");
+
+
+        div.className = "mov";
+
+
+        let signo =
+            n.tipo === "entrada"
+                ? "+"
+                : "-";
+
+
+        div.innerHTML = `
+
+            <strong>
+                🏪 ${n.nombre}
+            </strong>
+
+            <br>
+
+            ${n.tipo === "entrada"
+                ? "Entrada"
+                : "Salida"}
+
+            <br>
+
+            <strong>
+                ${signo} S/ ${Number(n.monto).toFixed(2)}
+            </strong>
+
+        `;
+
+
+        lista.appendChild(div);
+
+    });
+
+}
+
+
+
+/* ================================================= */
+/* AHORROS */
+/* ================================================= */
+
+function guardarAhorro(){
+
+    let monto =
+        parseFloat(
+            document.getElementById(
+                "montoAhorro"
+            ).value
+        );
+
+
+    let tipo =
+        document.getElementById(
+            "tipoAhorro"
+        ).value;
+
+
+    if(isNaN(monto) || monto <= 0){
+
+        alert("Ingresa un monto válido");
+
+        return;
+
+    }
+
+
+    ahorros.push({
+
+        id:Date.now(),
+
+        monto:monto,
+
+        tipo:tipo
+
+    });
+
+
+    localStorage.setItem(
+        "ahorros",
+        JSON.stringify(ahorros)
+    );
+
+
+    document.getElementById(
+        "montoAhorro"
+    ).value = "";
+
+
+    alert("✅ Ahorro guardado");
+
+
+    actualizar();
+
+}
+
+
+
+/* ================================================= */
+/* ACTUALIZAR TODO */
+/* ================================================= */
+
+function actualizar(){
+
+    let ingresos = 0;
+
+    let gastos = 0;
+
+
+    let efectivo = 0;
+
+    let yape = 0;
+
+    let plin = 0;
+
+    let lemon = 0;
+
+
+
+    movimientos.forEach(function(m){
+
+        let monto =
+            Number(m.monto);
+
+
+        if(m.tipo === "ingreso"){
+
+            ingresos += monto;
+
+        }else{
+
+            gastos += monto;
+
+        }
+
+
+        let saldo =
+            m.tipo === "ingreso"
+                ? monto
+                : -monto;
+
+
+        if(m.medio === "Efectivo"){
+
+            efectivo += saldo;
+
+        }
+
+
+        if(m.medio === "Yape"){
+
+            yape += saldo;
+
+        }
+
+
+        if(m.medio === "Plin"){
+
+            plin += saldo;
+
+        }
+
+
+        if(m.medio === "Lemon"){
+
+            lemon += saldo;
+
+        }
+
+    });
+
+
+
+    let saldo =
+        ingresos - gastos;
+
+
+
+    /* SALDO PRINCIPAL */
+
+    document.getElementById(
+        "saldo"
+    ).innerText =
+        "S/ " + saldo.toFixed(2);
+
+
+
+    /* MEDIOS */
+
+    document.getElementById(
+        "totalEfectivo"
+    ).innerText =
+        "S/ " + efectivo.toFixed(2);
+
+
+    document.getElementById(
+        "totalYape"
+    ).innerText =
+        "S/ " + yape.toFixed(2);
+
+
+    document.getElementById(
+        "totalPlin"
+    ).innerText =
+        "S/ " + plin.toFixed(2);
+
+
+    document.getElementById(
+        "totalLemon"
+    ).innerText =
+        "S/ " + lemon.toFixed(2);
+
+
+
+    /* INGRESOS Y GASTOS */
+
+    document.getElementById(
+        "totalIngresos"
+    ).innerText =
+        "S/ " + ingresos.toFixed(2);
+
+
+    document.getElementById(
+        "totalGastos"
+    ).innerText =
+        "S/ " + gastos.toFixed(2);
+
+
+
+    /* DEUDAS */
+
+    let totalDeudas = 0;
+
+
+    deudas.forEach(function(d){
+
+        let pendiente =
+            Number(d.monto) -
+            Number(d.pagado || 0);
+
+
+        if(d.tipo === "meDeben"){
+
+            totalDeudas += pendiente;
+
+        }
+
+    });
+
+
+    document.getElementById(
+        "totalDeudas"
+    ).innerText =
+        "S/ " + totalDeudas.toFixed(2);
+
+
+
+    /* AHORROS */
+
+    let totalAhorros = 0;
+
+
+    ahorros.forEach(function(a){
+
+        if(a.tipo === "entrada"){
+
+            totalAhorros += Number(a.monto);
+
+        }else{
+
+            totalAhorros -= Number(a.monto);
+
+        }
+
+    });
+
+
+    document.getElementById(
+        "totalAhorros"
+    ).innerText =
+        "S/ " + totalAhorros.toFixed(2);
+
+
+    document.getElementById(
+        "saldoAhorros"
+    ).innerText =
+        "S/ " + totalAhorros.toFixed(2);
+
+
+
+    /* LISTAS */
+
+    mostrarMovimientos();
+
+    mostrarDeudas();
+
+    mostrarNegocios();
+
+}
+
+
+
+/* ================================================= */
+/* INICIAR APP */
+/* ================================================= */
+
+actualizar();
+
+
+  actualizar();
+
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", function(){
+
+        navigator.serviceWorker
+            .register("./sw.js")
+            .then(function(){
+
+                console.log(
+                    "✅ Mi Dinero está funcionando como PWA"
+                );
+
+            })
+            .catch(function(error){
+
+                console.log(
+                    "❌ Error PWA:",
+                    error
+                );
+
+            });
+
+    });
+
+}
+
+</script>
+
+</body>
+
+</html>
+  
+</script>
+</script>
+
+
+</body>
+
+</html>
+
